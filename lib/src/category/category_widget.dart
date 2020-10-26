@@ -26,7 +26,7 @@ class _CategoryWidgetState extends State<CategoryWidget> {
       body: StreamBuilder<List<Categorie>>(
         stream: MyDataBase.instance.categoryDAO.listAll(),
         builder: (context, snapshot) {
-          if (snapshot.hasData) return Container();
+          if (!snapshot.hasData) return Container();
 
           List<Categorie> categories = snapshot.data;
 
@@ -50,6 +50,8 @@ class AddCategory extends StatefulWidget {
 }
 
 class _AddCategoryState extends State<AddCategory> {
+  String categoryTitle;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -58,7 +60,20 @@ class _AddCategoryState extends State<AddCategory> {
       ),
       body: Column(
         children: [
-          TextField(),
+          TextField(
+            onChanged: (text) {
+              categoryTitle = text;
+            },
+          ),
+          RaisedButton(
+            child: Text("add"),
+            onPressed: () {
+              MyDataBase.instance.categoryDAO.addCategory(
+                Categorie(title: categoryTitle),
+              );
+              Navigator.pop(context);
+            },
+          )
         ],
       ),
     );
